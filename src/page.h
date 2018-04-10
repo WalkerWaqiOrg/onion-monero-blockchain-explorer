@@ -4296,6 +4296,15 @@ public:
 
         // get block size in bytes
         uint64_t blk_size = core_storage->get_db().get_block_size(block_height);
+            
+        //get block difficulty 
+        uint64_t blk_difficulty = core_storage->get_db().get_block_difficulty(block_height);
+
+        // get block cumulative difficut
+        uint64_t blk_cumulative_difficulty = core_storage->get_db().get_block_cumulative_difficulty(block_height);
+
+        // get block emission 
+        uint64_t blk_emission = core_storage->get_db().get_block_already_generated_coins(block_height);
 
         // miner reward tx
         transaction coinbase_tx = blk.miner_tx;
@@ -4348,6 +4357,9 @@ public:
                 {"timestamp_utc" , xmreg::timestamp_to_str_gm(blk.timestamp)},
                 {"block_height"  , block_height},
                 {"size"          , blk_size},
+                {"cumulative_difficulty" , blk_cumulative_difficulty},
+                {"emission"              , blk_emission},
+                {"block_difficulty"      , blk_difficulty},
                 {"txs"           , j_txs},
                 {"current_height", current_blockchain_height}
         };
