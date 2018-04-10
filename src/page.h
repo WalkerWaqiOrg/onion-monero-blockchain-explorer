@@ -4370,6 +4370,78 @@ public:
     }
 
 
+  //add by daihw 2018-04-10
+  json 
+  json_block_median(string no_of_last_blocks) {
+
+    json j_response {
+                {"status", "fail"},
+                {"data"  , json {}}
+        };
+
+    json& j_data = j_response["data"];
+    j_data["blocks"] = json::array();
+    json& j_blocks = j_data["blocks"];
+
+    uint64_t height =  core_storage->get_current_blockchain_height();
+    uint64_t last_blocks {0};
+
+    try {
+                last_blocks  = boost::lexical_cast<uint64_t>(no_of_last_blocks);
+        } catch (const boost::bad_lexical_cast& e) {
+                j_data["title"] = fmt::format("Cant parse block number: {:s}", no_of_last_blocks);
+                return j_response;
+        }
+    
+   // calculate starting and ending block numbers to show
+   int64_t start_height = height - last_blocks ;
+
+   // check if start height is not below range
+   start_height = start_height < 0 ? 0 : start_height;
+
+   int64_t end_height = start_height + last_blocks - 1;
+   vector<double> blk_sizes;
+
+   // loop index
+   int64_t i = end_height;
+
+   // iterate over last no_of_last_blocks of blocks
+   while (i >= start_height) {
+           
+         // get block at the given height i
+         block blk;
+         if (!mcore->get_block_by_height(i, blk)) {
+               
+              cerr << "Cant get block: " << i << endl;
+              --i;
+              continue;
+         }
+
+	 // get block's hash
+         crypto::hash blk_hash = core_storage->get_block_id_by_height(i);
+         // get block size in kB
+         double blk_size = static_cast<double>(core_storage->get_db().get_block_size(i))/1024.0;
+         blk_sizes.push_back(blk_size);
+         double blk_size_median = xmreg::calc_median(blk_sizes.begin(), blk_sizes.end());
+
+ 	j_blocks.push_back(json {
+                    {"height"       , i},
+                    {"size"         , fmt::format("{:0.2f}", blk_size)},
+                    {"median_size"    , fmt::format("{:0.2f}", blk_size_median)}
+        });
+
+            
+        --i; 
+      }
+     
+      j_response["status"] = "success";
+
+      return j_response;
+
+ }
+
+ //add end
+
 
     /*
      * Lets use this json api convention for success and error
