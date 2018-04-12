@@ -189,8 +189,8 @@ struct tx_details
 
             mixin_str        = std::to_string(mixin_no);
             fee_str          = fmt::format("{:0.6f}", xmr_amount);
-            fee_short_str    = fmt::format("{:0.3f}", xmr_amount);
-            payed_for_kB_str = fmt::format("{:0.3f}", payed_for_kB);
+            fee_short_str    = fmt::format("{:0.2f}", xmr_amount);
+            payed_for_kB_str = fmt::format("{:0.2f}", payed_for_kB);
         }
 
 
@@ -203,8 +203,8 @@ struct tx_details
                 {"payed_for_kB"      , payed_for_kB_str},
                 {"sum_inputs"        , xmr_amount_to_str(xmr_inputs , "{:0.6f}")},
                 {"sum_outputs"       , xmr_amount_to_str(xmr_outputs, "{:0.6f}")},
-                {"sum_inputs_short"  , xmr_amount_to_str(xmr_inputs , "{:0.3f}")},
-                {"sum_outputs_short" , xmr_amount_to_str(xmr_outputs, "{:0.3f}")},
+                {"sum_inputs_short"  , xmr_amount_to_str(xmr_inputs , "{:0.2f}")},
+                {"sum_outputs_short" , xmr_amount_to_str(xmr_outputs, "{:0.2f}")},
                 {"no_inputs"         , static_cast<uint64_t>(input_key_imgs.size())},
                 {"no_outputs"        , static_cast<uint64_t>(output_pub_keys.size())},
                 {"no_nonrct_inputs"  , num_nonrct_inputs},
@@ -219,7 +219,7 @@ struct tx_details
                 {"extra"             , get_extra_str()},
                 {"payment_id8"       , pod_to_hex(payment_id8)},
                 {"unlock_time"       , unlock_time},
-                {"tx_size"           , fmt::format("{:0.4f}", tx_size)},
+                {"tx_size"           , fmt::format("{:0.2f}", tx_size)},
                 {"tx_size_short"     , fmt::format("{:0.2f}", tx_size)},
                 {"has_add_pks"       , !additional_pks.empty()}
         };
@@ -822,7 +822,7 @@ public:
         }
         else
         {
-            hash_rate = fmt::format("{:0.3f} MH/s", current_network_info.hash_rate/1.0e6);
+            hash_rate = fmt::format("{:0.2f} MH/s", current_network_info.hash_rate/1.0e6);
         }
 
         pair<string, string> network_info_age = get_age(local_copy_server_timestamp,
@@ -876,8 +876,8 @@ public:
                     = CurrentBlockchainStatus::get_emission();
 
             string emission_blk_no   = std::to_string(current_values.blk_no - 1);
-            string emission_coinbase = xmr_amount_to_str(current_values.coinbase, "{:0.3f}");
-            string emission_fee      = xmr_amount_to_str(current_values.fee, "{:0.3f}");
+            string emission_coinbase = xmr_amount_to_str(current_values.coinbase, "{:0.2f}");
+            string emission_fee      = xmr_amount_to_str(current_values.fee, "{:0.2f}");
 
             context["emission"] = mstch::map {
                     {"blk_no"    , emission_blk_no},
@@ -1253,11 +1253,11 @@ public:
 
         // add total fees in the block to the context
         context["sum_fees"]
-                = xmreg::xmr_amount_to_str(sum_fees, "{:0.6f}", false);
+                = xmreg::xmr_amount_to_str(sum_fees, "{:0.2f}", false);
 
         // get xmr in the block reward
         context["blk_reward"]
-                = xmreg::xmr_amount_to_str(txd_coinbase.xmr_outputs - sum_fees, "{:0.6f}");
+                = xmreg::xmr_amount_to_str(txd_coinbase.xmr_outputs - sum_fees, "{:0.2f}");
 
         add_css_style(context);
 
@@ -1751,7 +1751,7 @@ public:
                 {"blk_height"           , tx_blk_height_str},
                 {"tx_size"              , fmt::format("{:0.4f}",
                                                       static_cast<double>(txd.size) / 1024.0)},
-                {"tx_fee"               , xmreg::xmr_amount_to_str(txd.fee, "{:0.12f}", true)},
+                {"tx_fee"               , xmreg::xmr_amount_to_str(txd.fee, "{:0.2f}", true)},
                 {"blk_timestamp"        , blk_timestamp},
                 {"delta_time"           , age.first},
                 {"outputs_no"           , static_cast<uint64_t>(txd.output_pub_keys.size())},
@@ -2280,7 +2280,7 @@ public:
         context["show_inputs"]   = show_key_images;
         context["inputs_no"]     = static_cast<uint64_t>(inputs.size());
         context["sum_mixin_xmr"] = xmreg::xmr_amount_to_str(
-                sum_mixin_xmr, "{:0.12f}", false);
+                sum_mixin_xmr, "{:0.2f}", false);
 
 
         uint64_t possible_spending  {0};
@@ -2296,7 +2296,7 @@ public:
         }
 
         context["possible_spending"] = xmreg::xmr_amount_to_str(
-                possible_spending, "{:0.12f}", false);
+                possible_spending, "{:0.2f}", false);
 
         add_css_style(context);
 
@@ -3336,7 +3336,7 @@ public:
                     = *reinterpret_cast<const crypto::signature*>(record_ptr + key_img_size);
 
             mstch::map key_img_info {
-                    {"key_no"              , fmt::format("{:03d}", n)},
+                    {"key_no"              , fmt::format("{:02d}", n)},
                     {"key_image"           , pod_to_hex(key_image)},
                     {"signature"           , fmt::format("{:s}", signature)},
                     {"address"             , xmreg::print_address(
@@ -3566,7 +3566,7 @@ public:
             }
 
             mstch::map output_info {
-                    {"output_no"           , fmt::format("{:03d}", output_no)},
+                    {"output_no"           , fmt::format("{:02d}", output_no)},
                     {"output_pub_key"      , REMOVE_HASH_BRAKETS(fmt::format("{:s}", txout_key.key))},
                     {"amount"              , xmreg::xmr_amount_to_str(xmr_amount)},
                     {"tx_hash"             , REMOVE_HASH_BRAKETS(fmt::format("{:s}", td.m_txid))},
@@ -5310,8 +5310,8 @@ public:
                     = CurrentBlockchainStatus::get_emission();
 
             string emission_blk_no   = std::to_string(current_values.blk_no - 1);
-            string emission_coinbase = xmr_amount_to_str(current_values.coinbase, "{:0.3f}");
-            string emission_fee      = xmr_amount_to_str(current_values.fee, "{:0.3f}", false);
+            string emission_coinbase = xmr_amount_to_str(current_values.coinbase, "{:0.2f}");
+            string emission_fee      = xmr_amount_to_str(current_values.fee, "{:0.2f}", false);
 
             j_data = json {
                     {"blk_no"  , current_values.blk_no - 1},
@@ -5685,8 +5685,8 @@ private:
                 {"blk_height"            , tx_blk_height_str},
                 {"tx_blk_height"         , tx_blk_height},
                 {"tx_size"               , fmt::format("{:0.4f}", tx_size)},
-                {"tx_fee"                , xmreg::xmr_amount_to_str(txd.fee, "{:0.12f}", false)},
-                {"payed_for_kB"          , fmt::format("{:0.12f}", payed_for_kB)},
+                {"tx_fee"                , xmreg::xmr_amount_to_str(txd.fee, "{:0.2f}", false)},
+                {"payed_for_kB"          , fmt::format("{:0.2f}", payed_for_kB)},
                 {"tx_version"            , static_cast<uint64_t>(txd.version)},
                 {"blk_timestamp"         , blk_timestamp},
                 {"blk_timestamp_uint"    , blk.timestamp},
