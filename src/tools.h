@@ -31,6 +31,7 @@
 #include <iterator>
 #include <algorithm>
 #include <type_traits>
+#include <regex>
 
 
 /**
@@ -331,6 +332,17 @@ namespace xmreg
     void
     pause_execution(uint64_t no_seconds, const string& text = "now");
 
+}
+
+/*
+ * Remove all characters in in_str that match the given
+ * regular expression
+ */
+template <typename T>
+inline string
+remove_bad_chars(T&& in_str, std::regex const& rgx = std::regex ("[^a-zA-Z0-9]"))
+{
+    return std::regex_replace(std::forward<T>(in_str), rgx, "");
 }
 
 #endif //XMREG01_TOOLS_H
