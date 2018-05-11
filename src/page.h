@@ -164,8 +164,8 @@ namespace xmreg
             if (!input_key_imgs.empty())
             {
                 mixin_str     = std::to_string(mixin_no);
-                fee_str       = fmt::format("{:0.6f}", xmr_amount);
-                fee_short_str = fmt::format("{:0.3f}", xmr_amount);
+                fee_str       = fmt::format("{:0.2f}", xmr_amount);
+                fee_short_str = fmt::format("{:0.2f}", xmr_amount);
             }
 
             const double& tx_size =  static_cast<double>(size)/1024.0;
@@ -178,8 +178,8 @@ namespace xmreg
                     {"tx_fee_short"      , fee_short_str},
                     {"sum_inputs"        , xmr_amount_to_str(xmr_inputs , "{:0.6f}")},
                     {"sum_outputs"       , xmr_amount_to_str(xmr_outputs, "{:0.6f}")},
-                    {"sum_inputs_short"  , xmr_amount_to_str(xmr_inputs , "{:0.3f}")},
-                    {"sum_outputs_short" , xmr_amount_to_str(xmr_outputs, "{:0.3f}")},
+                    {"sum_inputs_short"  , xmr_amount_to_str(xmr_inputs , "{:0.2f}")},
+                    {"sum_outputs_short" , xmr_amount_to_str(xmr_outputs, "{:0.2f}")},
                     {"no_inputs"         , static_cast<uint64_t>(input_key_imgs.size())},
                     {"no_outputs"        , static_cast<uint64_t>(output_pub_keys.size())},
                     {"no_nonrct_inputs"  , num_nonrct_inputs},
@@ -193,7 +193,7 @@ namespace xmreg
                     {"extra"             , get_extra_str()},
                     {"payment_id8"       , pod_to_hex(payment_id8)},
                     {"unlock_time"       , unlock_time},
-                    {"tx_size"           , fmt::format("{:0.4f}", tx_size)},
+                    {"tx_size"           , fmt::format("{:0.2f}", tx_size)},
                     {"tx_size_short"     , fmt::format("{:0.2f}", tx_size)}
             };
 
@@ -715,7 +715,7 @@ namespace xmreg
             }
             else
             {
-                hash_rate = fmt::format("{:0.3f} MH/s", current_network_info.hash_rate/1.0e6);
+                hash_rate = fmt::format("{:0.2f} MH/s", current_network_info.hash_rate/1.0e6);
             }
 
             pair<string, string> network_info_age = get_age(local_copy_server_timestamp,
@@ -768,8 +768,8 @@ namespace xmreg
                         = CurrentBlockchainStatus::get_emission();
 
                 string emission_blk_no   = std::to_string(current_values.blk_no - 1);
-                string emission_coinbase = xmr_amount_to_str(current_values.coinbase, "{:0.3f}");
-                string emission_fee      = xmr_amount_to_str(current_values.fee, "{:0.3f}");
+                string emission_coinbase = xmr_amount_to_str(current_values.coinbase, "{:0.2f}");
+                string emission_fee      = xmr_amount_to_str(current_values.fee, "{:0.2f}");
 
                 context["emission"] = mstch::map {
                         {"blk_no"    , emission_blk_no},
@@ -1141,11 +1141,11 @@ namespace xmreg
 
             // add total fees in the block to the context
             context["sum_fees"]
-                    = xmreg::xmr_amount_to_str(sum_fees, "{:0.6f}", "0");
+                    = xmreg::xmr_amount_to_str(sum_fees, "{:0.2f}", "0");
 
             // get xmr in the block reward
             context["blk_reward"]
-                    = xmreg::xmr_amount_to_str(txd_coinbase.xmr_outputs - sum_fees, "{:0.6f}");
+                    = xmreg::xmr_amount_to_str(txd_coinbase.xmr_outputs - sum_fees, "{:0.2f}");
 
             add_css_style(context);
 
@@ -1623,7 +1623,7 @@ namespace xmreg
                     {"blk_height"           , tx_blk_height_str},
                     {"tx_size"              , fmt::format("{:0.4f}",
                                                           static_cast<double>(txd.size) / 1024.0)},
-                    {"tx_fee"               , xmreg::xmr_amount_to_str(txd.fee, "{:0.12f}", true)},
+                    {"tx_fee"               , xmreg::xmr_amount_to_str(txd.fee, "{:0.2f}", true)},
                     {"blk_timestamp"        , blk_timestamp},
                     {"delta_time"           , age.first},
                     {"outputs_no"           , static_cast<uint64_t>(txd.output_pub_keys.size())},
@@ -2086,7 +2086,7 @@ namespace xmreg
             context["show_inputs"]   = show_key_images;
             context["inputs_no"]     = static_cast<uint64_t>(inputs.size());
             context["sum_mixin_xmr"] = xmreg::xmr_amount_to_str(
-                    sum_mixin_xmr, "{:0.12f}", false);
+                    sum_mixin_xmr, "{:0.2f}", false);
 
 
             uint64_t possible_spending  {0};
@@ -2102,7 +2102,7 @@ namespace xmreg
             }
 
             context["possible_spending"] = xmreg::xmr_amount_to_str(
-                    possible_spending, "{:0.12f}", false);
+                    possible_spending, "{:0.2f}", false);
 
             add_css_style(context);
 
@@ -3120,7 +3120,7 @@ namespace xmreg
                         = *reinterpret_cast<const crypto::signature*>(record_ptr + key_img_size);
 
                 mstch::map key_img_info {
-                        {"key_no"              , fmt::format("{:03d}", n)},
+                        {"key_no"              , fmt::format("{:02d}", n)},
                         {"key_image"           , pod_to_hex(key_image)},
                         {"signature"           , fmt::format("{:s}", signature)},
                         {"address"             , xmreg::print_address(*xmr_address, testnet)},
@@ -3337,7 +3337,7 @@ namespace xmreg
                 }
 
                 mstch::map output_info {
-                        {"output_no"           , fmt::format("{:03d}", output_no)},
+                        {"output_no"           , fmt::format("{:02d}", output_no)},
                         {"output_pub_key"      , REMOVE_HASH_BRAKETS(fmt::format("{:s}", txout_key.key))},
                         {"amount"              , xmreg::xmr_amount_to_str(xmr_amount)},
                         {"tx_hash"             , REMOVE_HASH_BRAKETS(fmt::format("{:s}", td.m_txid))},
@@ -4051,6 +4051,15 @@ namespace xmreg
 
             // get block size in bytes
             uint64_t blk_size = core_storage->get_db().get_block_size(block_height);
+            
+            //get block difficulty
+            uint64_t blk_difficulty = core_storage->get_db().get_block_difficulty(block_height);
+
+            // get block cumulative difficut
+            uint64_t blk_cumulative_difficulty = core_storage->get_db().get_block_cumulative_difficulty(block_height);
+
+            // get block emission
+            uint64_t blk_emission = core_storage->get_db().get_block_already_generated_coins(block_height);
 
             // miner reward tx
             transaction coinbase_tx = blk.miner_tx;
@@ -4096,16 +4105,19 @@ namespace xmreg
                 sum_fees += txd.fee;
             }
 
-            j_data = json {
-                    {"block_height"  , block_height},
-                    {"hash"          , pod_to_hex(blk_hash)},
-                    {"timestamp"     , blk.timestamp},
-                    {"timestamp_utc" , xmreg::timestamp_to_str_gm(blk.timestamp)},
-                    {"block_height"  , block_height},
-                    {"size"          , blk_size},
-                    {"txs"           , j_txs},
-                    {"current_height", current_blockchain_height}
-            };
+        j_data = json {
+                {"block_height"  , block_height},
+                {"hash"          , pod_to_hex(blk_hash)},
+                {"timestamp"     , blk.timestamp},
+                {"timestamp_utc" , xmreg::timestamp_to_str_gm(blk.timestamp)},
+                {"block_height"  , block_height},
+                {"size"          , blk_size},
+                {"cumulative_difficulty" , blk_cumulative_difficulty},
+                {"emission"              , blk_emission},
+                {"block_difficulty"      , blk_difficulty},
+                {"txs"           , j_txs},
+                {"current_height", current_blockchain_height}
+        };
 
             j_response["status"] = "success";
 
@@ -4113,18 +4125,88 @@ namespace xmreg
         }
 
 
+  json 
+  json_block_median(string no_of_last_blocks) {
 
-        /*
-         * Lets use this json api convention for success and error
-         * https://labs.omniti.com/labs/jsend
-         */
-        json
-        json_rawblock(string block_no_or_hash)
-        {
-            json j_response {
-                    {"status", "fail"},
-                    {"data"  , json {}}
-            };
+    json j_response {
+                {"status", "fail"},
+                {"data"  , json {}}
+        };
+
+    json& j_data = j_response["data"];
+    j_data["blocks"] = json::array();
+    json& j_blocks = j_data["blocks"];
+
+    uint64_t height =  core_storage->get_current_blockchain_height();
+    uint64_t last_blocks {0};
+
+    try {
+                last_blocks  = boost::lexical_cast<uint64_t>(no_of_last_blocks);
+        } catch (const boost::bad_lexical_cast& e) {
+                j_data["title"] = fmt::format("Cant parse block number: {:s}", no_of_last_blocks);
+                return j_response;
+        }
+    
+   // calculate starting and ending block numbers to show
+   int64_t start_height = height - last_blocks ;
+
+   // check if start height is not below range
+   start_height = start_height < 0 ? 0 : start_height;
+
+   int64_t end_height = start_height + last_blocks - 1;
+   vector<double> blk_sizes;
+
+   // loop index
+   int64_t i = end_height;
+
+   // iterate over last no_of_last_blocks of blocks
+   while (i >= start_height) {
+           
+         // get block at the given height i
+         block blk;
+         if (!mcore->get_block_by_height(i, blk)) {
+               
+              cerr << "Cant get block: " << i << endl;
+              --i;
+              continue;
+         }
+
+	 // get block's hash
+         crypto::hash blk_hash = core_storage->get_block_id_by_height(i);
+         // get block size in kB
+         double blk_size = static_cast<double>(core_storage->get_db().get_block_size(i))/1024.0;
+         blk_sizes.push_back(blk_size);
+         double blk_size_median = xmreg::calc_median(blk_sizes.begin(), blk_sizes.end());
+
+ 	j_blocks.push_back(json {
+                    {"height"       , i},
+                    {"size"         , fmt::format("{:0.2f}", blk_size)},
+                    {"median_size"    , fmt::format("{:0.2f}", blk_size_median)}
+        });
+
+            
+        --i; 
+      }
+     
+      j_response["status"] = "success";
+
+      return j_response;
+
+ }
+
+
+
+    /*
+     * Lets use this json api convention for success and error
+     * https://labs.omniti.com/labs/jsend
+     */
+    json
+    json_rawblock(string block_no_or_hash)
+    {
+        json j_response {
+                {"status", "fail"},
+                {"data"  , json {}}
+        };
 
             json& j_data = j_response["data"];
 
@@ -4962,8 +5044,8 @@ namespace xmreg
                         = CurrentBlockchainStatus::get_emission();
 
                 string emission_blk_no   = std::to_string(current_values.blk_no - 1);
-                string emission_coinbase = xmr_amount_to_str(current_values.coinbase, "{:0.3f}");
-                string emission_fee      = xmr_amount_to_str(current_values.fee, "{:0.3f}", false);
+                string emission_coinbase = xmr_amount_to_str(current_values.coinbase, "{:0.2f}");
+                string emission_fee      = xmr_amount_to_str(current_values.fee, "{:0.2f}", false);
 
                 j_data = json {
                         {"blk_no"  , current_values.blk_no - 1},
@@ -5314,7 +5396,7 @@ namespace xmreg
                     {"tx_blk_height"         , tx_blk_height},
                     {"tx_size"               , fmt::format("{:0.4f}",
                                                            static_cast<double>(txd.size) / 1024.0)},
-                    {"tx_fee"                , xmreg::xmr_amount_to_str(txd.fee, "{:0.12f}", false)},
+                    {"tx_fee"                , xmreg::xmr_amount_to_str(txd.fee, "{:0.2f}", false)},
                     {"tx_version"            , static_cast<uint64_t>(txd.version)},
                     {"blk_timestamp"         , blk_timestamp},
                     {"blk_timestamp_uint"    , blk.timestamp},

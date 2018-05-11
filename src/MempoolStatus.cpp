@@ -174,10 +174,10 @@ MempoolStatus::read_mempool()
             last_tx.mixin_no          = sum_data[2];
             last_tx.num_nonrct_inputs = sum_data[3];
 
-            last_tx.fee_str         = xmreg::xmr_amount_to_str(_tx_info.fee, "{:0.3f}", false);
-            last_tx.xmr_inputs_str  = xmreg::xmr_amount_to_str(last_tx.sum_inputs , "{:0.3f}");
-            last_tx.xmr_outputs_str = xmreg::xmr_amount_to_str(last_tx.sum_outputs, "{:0.3f}");
-            last_tx.timestamp_str   = xmreg::timestamp_to_str_gm(_tx_info.receive_time);
+            last_tx.fee_str             = xmreg::xmr_amount_to_str(_tx_info.fee, "{:0.2f}", false);
+            last_tx.xmr_inputs_str      = xmreg::xmr_amount_to_str(last_tx.sum_inputs , "{:0.2f}");
+            last_tx.xmr_outputs_str     = xmreg::xmr_amount_to_str(last_tx.sum_outputs, "{:0.2f}");
+            last_tx.timestamp_str       = xmreg::timestamp_to_str_gm(_tx_info.receive_time);
 
             last_tx.txsize          = fmt::format("{:0.2f}",
                                           static_cast<double>(_tx_info.blob_size)/1024.0);
@@ -284,7 +284,7 @@ MempoolStatus::is_thread_running()
 }
 
 bf::path MempoolStatus::blockchain_path {"/home/mwo/.bitmonero/lmdb"};
-string MempoolStatus::deamon_url {"http:://127.0.0.1:18081"};
+string MempoolStatus::deamon_url {"http:://127.0.0.1:22338"};
 bool   MempoolStatus::testnet {false};
 atomic<bool>       MempoolStatus::is_running {false};
 boost::thread      MempoolStatus::m_thread;

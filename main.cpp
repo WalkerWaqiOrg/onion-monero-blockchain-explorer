@@ -493,6 +493,14 @@ main(int ac, const char* av[])
             return r;
         });
 
+        CROW_ROUTE(app, "/api/block_median/<string>")
+        ([&](const crow::request &req, string last_block_count) {
+
+            myxmr::jsonresponse r{xmrblocks.json_block_median(remove_bad_chars(last_block_count))};
+
+            return r;
+        });
+
         CROW_ROUTE(app, "/api/rawtransaction/<string>")
         ([&](const crow::request &req, string tx_hash) {
 
